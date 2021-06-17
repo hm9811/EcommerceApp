@@ -7,4 +7,6 @@
     <string name="enter_email">Enter email</string>
     <string name="enter_password">Enter password</string>
     <string name="registration_message">New User Registration</string>
+    <string name="popular_products">Popular Products</string>
+    <string name="browse_category">Browse Category</string>
 </resources>

@@ -3,6 +3,7 @@ package com.example.ecommerceapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -45,11 +46,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         btnRegister = findViewById(R.id.btnRegister);
 
-        btnRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mAuth.getCurrentUser() != null){
-                    //Success register
+        btnRegister.setOnClickListener((view) -> {
+                if (mAuth.getCurrentUser() == null){
+                    //User is logged in and can redirect to another activity.
                 }
                 else {
                     String firstnameString = firstname.getText().toString().trim();
@@ -99,31 +98,27 @@ public class RegisterActivity extends AppCompatActivity {
                         contactNoWrapper.requestFocus();
                         return;
                     }
-                    mAuth.createUserWithEmailAndPassword(emailString, passwordString).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
+                    mAuth.createUserWithEmailAndPassword(emailString, passwordString).addOnCompleteListener((task) -> {
                             if(task.isSuccessful()){
                                 User user = new User(firstnameString, lastnameString, emailString, contactNoString);
-                                FirebaseDatabase.getInstance().getReference("Users").child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                            .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task){
-                                                    if(task.isSuccessful()){
-                                                        Toast.makeText(RegisterActivity.this, "User Created successfully.", Toast.LENGTH_SHORT).show();
+                                FirebaseDatabase.getInstance().getReference("Users")
+                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                            .setValue(user).addOnCompleteListener((tasks) -> {
+                                                    if(tasks.isSuccessful()){
+                                                        Toast.makeText(RegisterActivity.this, "User Created successfully.", Toast.LENGTH_LONG).show();
+                                                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                                        startActivity(intent);
                                                     }
                                                     else{
-                                                        Toast.makeText(RegisterActivity.this, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                                        Toast.makeText(RegisterActivity.this, tasks.getException().getMessage(), Toast.LENGTH_LONG).show();
                                                     }
-                                                }
                                 });
                             }
                             else{
                                 Toast.makeText(RegisterActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             }
-                        }
                     });
                 }
-            }
         });
     }
 }
