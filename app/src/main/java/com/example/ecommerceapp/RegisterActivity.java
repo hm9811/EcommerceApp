@@ -47,10 +47,6 @@ public class RegisterActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.btnRegister);
 
         btnRegister.setOnClickListener((view) -> {
-                if (mAuth.getCurrentUser() == null){
-                    //User is logged in and can redirect to another activity.
-                }
-                else {
                     String firstnameString = firstname.getText().toString().trim();
                     String lastnameString = lastname.getText().toString().trim();
                     String emailString = email.getText().toString().trim();
@@ -87,7 +83,7 @@ public class RegisterActivity extends AppCompatActivity {
                         return;
                     }
 
-                    if (password.equals(confpassword)) {
+                    if (!password.equals(confpassword)) {
                         confPasswordWrapper.setError("Password did not match");
                         confPasswordWrapper.requestFocus();
                         return;
@@ -98,27 +94,24 @@ public class RegisterActivity extends AppCompatActivity {
                         contactNoWrapper.requestFocus();
                         return;
                     }
-                    mAuth.createUserWithEmailAndPassword(emailString, passwordString).addOnCompleteListener((task) -> {
-                            if(task.isSuccessful()){
+                        mAuth.createUserWithEmailAndPassword(emailString, passwordString).addOnCompleteListener((task) -> {
+                            if (task.isSuccessful()) {
                                 User user = new User(firstnameString, lastnameString, emailString, contactNoString);
                                 FirebaseDatabase.getInstance().getReference("Users")
-                                            .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
-                                            .setValue(user).addOnCompleteListener((tasks) -> {
-                                                    if(tasks.isSuccessful()){
-                                                        Toast.makeText(RegisterActivity.this, "User Created successfully.", Toast.LENGTH_LONG).show();
-                                                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-                                                        startActivity(intent);
-                                                    }
-                                                    else{
-                                                        Toast.makeText(RegisterActivity.this, tasks.getException().getMessage(), Toast.LENGTH_LONG).show();
-                                                    }
+                                        .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                        .setValue(user).addOnCompleteListener((tasks) -> {
+                                    if (tasks.isSuccessful()) {
+                                        Toast.makeText(RegisterActivity.this, "User Created successfully.", Toast.LENGTH_LONG).show();
+                                        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                        startActivity(intent);
+                                    } else {
+                                        Toast.makeText(RegisterActivity.this, tasks.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                    }
                                 });
-                            }
-                            else{
+                            } else {
                                 Toast.makeText(RegisterActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
                             }
-                    });
-                }
+                        });
         });
     }
 }
