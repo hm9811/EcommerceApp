@@ -83,7 +83,7 @@ public class RegisterActivity extends AppCompatActivity {
                         return;
                     }
 
-                    if (!password.equals(confpassword)) {
+                    if (password.equals(confpassword)) {
                         confPasswordWrapper.setError("Password did not match");
                         confPasswordWrapper.requestFocus();
                         return;
