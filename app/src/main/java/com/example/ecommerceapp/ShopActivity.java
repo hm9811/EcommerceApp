@@ -6,8 +6,11 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Adapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -30,11 +33,16 @@ public class ShopActivity extends AppCompatActivity {
     private DatabaseReference mDatabaseReference;
     private List<Popular> mPopulars;
     private List<Category> cCategory;
+    private ImageButton button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop);
         imgBanner = findViewById(R.id.imgBanner);
+        button = findViewById(R.id.btnCart);
+        button.setOnClickListener(v -> {
+          openCart();  
+        });
 
         int sliders[] = {
                 R.drawable.banner1, R.drawable.banner2, R.drawable.banner3
@@ -44,6 +52,11 @@ public class ShopActivity extends AppCompatActivity {
         }
         showCategories();
         showPopularProducts();
+    }
+
+    private void openCart() {
+        Intent intent = new Intent(this, activity_cart.class);
+        startActivity(intent);
     }
 
     private void showCategories() {
